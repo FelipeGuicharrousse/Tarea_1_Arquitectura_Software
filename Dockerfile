@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY ./services/service1 /app/service1
-COPY ./services/service2 /app/service2
+COPY ./servicios/servicio_1 /app/servicio_1
+COPY ./servicios/servicio_2 /app/servicio_2
 
 EXPOSE 8000
 
