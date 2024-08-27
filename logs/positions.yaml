@@ -1,0 +1,3 @@
+positions:
+  /var/log/fastapi-service1.log: "680"
+  /var/log/fastapi-service2.log: "400"

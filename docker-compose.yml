@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  servicio_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: servicio_1
+    ports:
+      - "8050:8000"
+    environment:
+      - LOGGING_LEVEL=INFO
+    volumes:
+      - ./logs:/var/log
+    command: ["uvicorn", "servicio_1.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  servicio_2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: servicio_2
+    ports:
+      - "8070:8000"
+    environment:
+      - LOGGING_LEVEL=INFO
+    volumes:
+      - ./logs:/var/log
+    command: ["uvicorn", "servicio_2.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  promtail:
+    image: grafana/promtail:2.7.0
+    container_name: promtail
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/promtail-config.yml
+      - ./logs:/var/log
+    command: ["-config.file=/etc/promtail/promtail-config.yml"]
+
+  loki:
+    image: grafana/loki:2.8.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - loki
